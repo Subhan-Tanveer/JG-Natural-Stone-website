@@ -95,20 +95,15 @@
   function initPageTransition() {
     const wrap = document.getElementById('pageTransition');
     if (!wrap) return;
-    const panelEl = wrap.querySelector('.page-transition__panel');
-    const brandEl = wrap.querySelector('.page-transition__brand');
 
     // Restore from bfcache (back/forward): the curtain may have been left
     // in its covering state — re-run the reveal so content shows.
     window.addEventListener('pageshow', e => {
       if (!e.persisted) return;
       wrap.classList.remove('is-covering');
-      [panelEl, brandEl].forEach(el => {
-        if (!el) return;
-        el.style.animation = 'none';
-        void el.offsetWidth;            // force reflow to restart the reveal
-        el.style.animation = '';
-      });
+      wrap.style.animation = 'none';
+      void wrap.offsetWidth;            // force reflow to restart the reveal
+      wrap.style.animation = '';
     });
 
     if (REDUCED) return;               // CSS hides the panel; navigate normally
