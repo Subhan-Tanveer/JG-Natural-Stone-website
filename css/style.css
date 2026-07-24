@@ -605,6 +605,27 @@ html.lenis,html.lenis body{height:auto}
 .muted{color:var(--dust)}
 .divider{height:1px;background:var(--line);max-width:var(--maxw);margin:0 auto}
 
+/* ---- page-transition curtain (brand wipe on navigation) ---- */
+.page-transition{position:fixed;inset:0;z-index:2000;background:var(--graphite);
+  display:grid;place-items:center;transform:translateX(0);pointer-events:none;
+  animation:ptReveal .7s cubic-bezier(.76,0,.24,1) .05s both}
+.page-transition::after{content:"";position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay;
+  background-image:repeating-linear-gradient(115deg, rgba(230,224,212,.05) 0 2px, transparent 2px 8px)}
+.page-transition.is-covering{pointer-events:auto;
+  animation:ptCover .6s cubic-bezier(.76,0,.24,1) forwards}
+.page-transition__inner{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:1.1rem;animation:ptLogo .7s var(--ease) both}
+.page-transition__mark{width:3.6rem;height:3.6rem;display:grid;place-items:center;background:var(--brass);
+  color:var(--quarry);font-family:var(--font-display);font-weight:800;font-size:1.5rem;
+  border-radius:3px;letter-spacing:-.03em}
+.page-transition__name{font-family:var(--font-display);font-weight:700;color:var(--bone);
+  font-size:clamp(1.3rem,4vw,2.1rem);letter-spacing:-.01em}
+.page-transition__sub{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--brass);margin-top:.1rem}
+@keyframes ptReveal{from{transform:translateX(0)}to{transform:translateX(100%)}}
+@keyframes ptCover{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@keyframes ptLogo{0%{opacity:0;transform:translateY(12px)}30%,70%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+
 /* =========================================================
    REDUCED MOTION
    ========================================================= */
@@ -614,4 +635,5 @@ html.lenis,html.lenis body{height:auto}
   .hero__img{opacity:1!important}
   .thesis__text .w{opacity:1!important}
   .reveal-up,.reveal-lines>*,.hero__title .line>span{opacity:1!important;transform:none!important}
+  .page-transition{display:none!important}
 }

@@ -88,6 +88,54 @@
   }
 
   /* ---------------------------------------------------------
+     PAGE TRANSITION — brand curtain wipe between pages
+     Outgoing page: panel slides in from the LEFT to cover.
+     Incoming page: panel (covering by default) slides out RIGHT.
+  --------------------------------------------------------- */
+  function initPageTransition() {
+    const panel = document.getElementById('pageTransition');
+    if (!panel) return;
+
+    // Restore from bfcache (back/forward): the panel may have been left
+    // in its covering state — re-run the reveal so content shows.
+    window.addEventListener('pageshow', e => {
+      if (!e.persisted) return;
+      panel.classList.remove('is-covering');
+      panel.style.animation = 'none';
+      void panel.offsetWidth;          // force reflow to restart the reveal
+      panel.style.animation = '';
+    });
+
+    if (REDUCED) return;               // CSS hides the panel; navigate normally
+
+    const isInternal = a => {
+      const href = a.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('tel:') ||
+          href.startsWith('mailto:') || a.hasAttribute('download')) return false;
+      if (a.target && a.target !== '_self') return false;
+      let url;
+      try { url = new URL(a.href, location.href); } catch (_) { return false; }
+      if (url.origin !== location.origin) return false;          // external
+      if (url.href === location.href) return false;              // same page
+      if (url.pathname === location.pathname && url.hash) return false; // in-page anchor
+      return true;
+    };
+
+    document.addEventListener('click', e => {
+      if (e.defaultPrevented || e.button !== 0 ||
+          e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest('a');
+      if (!a || !isInternal(a)) return;
+      e.preventDefault();
+      const dest = a.href;
+      if (lenis) lenis.stop();
+      panel.classList.add('is-covering');          // slide in from the left
+      // navigate once the panel has fully covered the screen
+      setTimeout(() => { window.location.href = dest; }, 600);
+    });
+  }
+
+  /* ---------------------------------------------------------
      NAV + BURGER
   --------------------------------------------------------- */
   function initNav() {
@@ -511,6 +559,7 @@
   function boot() {
     handleImages();
     initLenis();
+    initPageTransition();
     initNav();
     initCursor();
     initProgress();
