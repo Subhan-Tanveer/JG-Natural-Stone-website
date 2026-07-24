@@ -86,11 +86,11 @@
   }
 
   /* ---------------------------------------------------------
-     HERO VIDEO — fade in once playable; pause + hide under
-     prefers-reduced-motion (procedural fallback shows instead)
+     HERO VIDEO (inner pages) — fade in once playable; pause + hide
+     under prefers-reduced-motion (procedural fallback shows instead)
   --------------------------------------------------------- */
   function initHeroVideo() {
-    const videos = document.querySelectorAll('video.hero__img, video.page-hero__video');
+    const videos = document.querySelectorAll('video.page-hero__video');
     videos.forEach(v => {
       const ready = () => v.classList.add('is-ready');
       if (v.readyState >= 2) ready();
@@ -104,6 +104,68 @@
         v.classList.remove('is-ready');
       }
     });
+  }
+
+  /* ---------------------------------------------------------
+     HERO VIDEO PLAYLIST (home page) — plays every hero clip back to
+     back with zero gap. Two <video> elements swap the "active" role;
+     whichever is idle silently preloads the NEXT clip while the other
+     plays, so by the time the current clip fires 'ended' the next one
+     is already buffered and starts instantly.
+  --------------------------------------------------------- */
+  function initHeroPlaylist() {
+    const stage = document.getElementById('heroVideoStage');
+    if (!stage) return;
+    const vidA = document.getElementById('heroVideoA');
+    const vidB = document.getElementById('heroVideoB');
+    if (!vidA || !vidB) return;
+
+    const ORDER = ['hero-home', 'hero-products', 'hero-granite', 'hero-quartz',
+      'hero-gallery', 'hero-visualizers', 'hero-financing', 'hero-faq', 'hero-contact'];
+    const srcFor = name => `assets/img/${name}.mp4`;
+
+    if (REDUCED) {
+      // Show a single static frame — no playlist, no autoplay.
+      vidA.src = srcFor(ORDER[0]);
+      vidA.addEventListener('loadeddata', () => vidA.classList.add('is-ready'), { once: true });
+      return;
+    }
+
+    let idx = 0;
+    let active = vidA;
+    let standby = vidB;
+
+    function preloadNext() {
+      const nextName = ORDER[(idx + 1) % ORDER.length];
+      standby.src = srcFor(nextName);
+      standby.load();
+    }
+
+    function playActive() {
+      active.classList.add('is-ready');
+      standby.classList.remove('is-ready');
+      const p = active.play();
+      if (p && p.catch) p.catch(() => {}); // ignore autoplay-blocked rejections
+      preloadNext();
+    }
+
+    function advance() {
+      idx = (idx + 1) % ORDER.length;
+      const prevActive = active;
+      active = standby;
+      standby = prevActive;
+      playActive();
+    }
+
+    vidA.addEventListener('ended', advance);
+    vidB.addEventListener('ended', advance);
+    // if a clip errors mid-playlist, skip straight to the next one
+    vidA.addEventListener('error', advance);
+    vidB.addEventListener('error', advance);
+
+    active.src = srcFor(ORDER[0]);
+    active.addEventListener('loadeddata', playActive, { once: true });
+    active.load();
   }
 
   /* ---------------------------------------------------------
@@ -578,6 +640,7 @@
   function boot() {
     handleImages();
     initHeroVideo();
+    initHeroPlaylist();
     initLenis();
     initPageTransition();
     initNav();

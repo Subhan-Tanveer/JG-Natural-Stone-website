@@ -115,10 +115,12 @@
     <section class="hero" id="hero">
       <div class="hero__media" data-parallax="0.18">
         <div class="hero__stone" aria-hidden="true"></div>
-        <video class="hero__img" id="heroVideo" autoplay muted loop playsinline preload="metadata"
-               aria-hidden="true">
-          <source src="assets/img/hero-home.mp4" type="video/mp4" />
-        </video>
+        <!-- Seamless video playlist: two players swap roles so the next
+             clip is already buffered before the current one ends. -->
+        <div class="hero__video-stage" id="heroVideoStage" aria-hidden="true">
+          <video class="hero__img" id="heroVideoA" muted playsinline preload="auto"></video>
+          <video class="hero__img" id="heroVideoB" muted playsinline preload="auto"></video>
+        </div>
         <div class="hero__scrim" aria-hidden="true"></div>
       </div>
 
