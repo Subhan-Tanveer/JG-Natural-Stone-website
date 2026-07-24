@@ -83,8 +83,27 @@
       if (img.complete && img.naturalWidth > 0) ready();
       else { img.addEventListener('load', ready); img.addEventListener('error', fail); }
     });
-    const hero = document.getElementById('heroImg');
-    if (hero) { if (hero.complete && hero.naturalWidth > 0) hero.classList.add('is-ready'); }
+  }
+
+  /* ---------------------------------------------------------
+     HERO VIDEO — fade in once playable; pause + hide under
+     prefers-reduced-motion (procedural fallback shows instead)
+  --------------------------------------------------------- */
+  function initHeroVideo() {
+    const videos = document.querySelectorAll('video.hero__img, video.page-hero__video');
+    videos.forEach(v => {
+      const ready = () => v.classList.add('is-ready');
+      if (v.readyState >= 2) ready();
+      else v.addEventListener('loadeddata', ready, { once: true });
+      // on error, leave it hidden (opacity 0) — the procedural stone
+      // background behind it already reads as an intentional layer
+      v.addEventListener('error', () => v.classList.remove('is-ready'), { once: true });
+      if (REDUCED) {
+        v.pause();
+        v.removeAttribute('autoplay');
+        v.classList.remove('is-ready');
+      }
+    });
   }
 
   /* ---------------------------------------------------------
@@ -558,6 +577,7 @@
   --------------------------------------------------------- */
   function boot() {
     handleImages();
+    initHeroVideo();
     initLenis();
     initPageTransition();
     initNav();

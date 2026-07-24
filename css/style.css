@@ -176,10 +176,10 @@ html.lenis,html.lenis body{height:auto}
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;
   justify-content:flex-end;padding:clamp(6rem,12vh,9rem) var(--pad) clamp(1.5rem,4vh,3rem);overflow:hidden}
 .hero__media{position:absolute;inset:-8% 0 0 0;z-index:0}
-.hero__img{position:absolute;inset:0;width:100%;height:112%;object-fit:cover;opacity:0}
+.hero__img{position:absolute;inset:0;width:100%;height:112%;object-fit:cover;opacity:0;z-index:1}
 .hero__img.is-ready{opacity:1;transition:opacity 1s var(--ease)}
-/* procedural stone fallback (shows if photo missing) */
-.hero__stone{position:absolute;inset:0;
+/* procedural stone fallback (shows if photo/video missing) — sits BEHIND real media */
+.hero__stone{position:absolute;inset:0;z-index:0;
   background:
     radial-gradient(120% 80% at 70% 10%, rgba(198,154,91,.10), transparent 55%),
     radial-gradient(90% 60% at 20% 90%, rgba(120,120,140,.10), transparent 60%),
@@ -189,7 +189,7 @@ html.lenis,html.lenis body{height:auto}
   background-image:
     repeating-linear-gradient(115deg, rgba(230,224,212,.05) 0 2px, transparent 2px 7px),
     repeating-linear-gradient(58deg, rgba(0,0,0,.25) 0 1px, transparent 1px 12px)}
-.hero__scrim{position:absolute;inset:0;
+.hero__scrim{position:absolute;inset:0;z-index:2;
   background:linear-gradient(180deg, rgba(18,16,14,.35) 0%, rgba(18,16,14,.15) 40%, rgba(18,16,14,.85) 85%, var(--quarry) 100%)}
 .hero__grid{position:absolute;inset:0;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);pointer-events:none;opacity:.5}
 .hero__grid span{border-right:1px solid rgba(230,224,212,.04)}
@@ -463,7 +463,12 @@ html.lenis,html.lenis body{height:auto}
     conic-gradient(from 210deg at 30% 20%, #14110e, #201a16 25%, #171310 45%, #241d18 70%, #14110e)}
 .page-hero__bg::after{content:"";position:absolute;inset:0;mix-blend-mode:overlay;opacity:.4;
   background-image:repeating-linear-gradient(115deg, rgba(230,224,212,.05) 0 2px, transparent 2px 8px)}
-.page-hero__inner{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto}
+.page-hero__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;z-index:1;
+  transition:opacity 1s var(--ease)}
+.page-hero__video.is-ready{opacity:1}
+.page-hero__scrim{position:absolute;inset:0;z-index:2;
+  background:linear-gradient(180deg, rgba(18,16,14,.5) 0%, rgba(18,16,14,.3) 35%, rgba(18,16,14,.9) 88%, var(--quarry) 100%)}
+.page-hero__inner{position:relative;z-index:3;max-width:var(--maxw);margin:0 auto}
 .breadcrumb{display:flex;align-items:center;gap:.6em;font-family:var(--font-mono);font-size:.72rem;
   letter-spacing:.15em;text-transform:uppercase;color:var(--dust);margin-bottom:1.6rem}
 .breadcrumb a{color:var(--brass)}
@@ -638,6 +643,7 @@ html.lenis,html.lenis body{height:auto}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
     transition-duration:.001ms!important;scroll-behavior:auto!important}
   .hero__img{opacity:1!important}
+  .page-hero__video{opacity:1!important}
   .thesis__text .w{opacity:1!important}
   .reveal-up,.reveal-lines>*,.hero__title .line>span{opacity:1!important;transform:none!important}
   .page-transition{display:none!important}
