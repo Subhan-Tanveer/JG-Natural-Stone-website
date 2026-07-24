@@ -102,8 +102,8 @@ html.lenis,html.lenis body{height:auto}
 .nav.is-scrolled{background:rgba(18,16,14,.72);backdrop-filter:blur(14px);
   border-bottom-color:var(--line);padding-top:.8rem;padding-bottom:.8rem}
 .nav__logo{display:flex;align-items:center;gap:.6rem;font-family:var(--font-display);font-weight:700}
-.nav__logo-mark{background:var(--brass);color:var(--quarry);font-weight:800;
-  width:2rem;height:2rem;display:grid;place-items:center;border-radius:2px;font-size:.9rem;letter-spacing:-.03em}
+.nav__logo-mark{width:2rem;height:2rem;flex:none;display:block;object-fit:cover;
+  border-radius:50%;box-shadow:0 0 0 1px var(--line)}
 .nav__logo-text{color:var(--bone);font-size:1.05rem;letter-spacing:-.01em}
 .nav__links{display:flex;gap:.2rem}
 .nav__link{font-size:.9rem;padding:.4rem .8rem;color:var(--limestone);position:relative}
@@ -433,7 +433,10 @@ html.lenis,html.lenis body{height:auto}
   text-align:center;margin-bottom:3rem;white-space:nowrap}
 .footer__cols{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;
   gap:2rem;padding-bottom:3rem;border-bottom:1px solid var(--line)}
-.footer__mark{font-family:var(--font-display);font-weight:700;color:var(--bone);font-size:1.1rem;margin-bottom:.8rem}
+.footer__brand{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem}
+.footer__logo{width:1.8rem;height:1.8rem;flex:none;display:block;object-fit:cover;
+  border-radius:50%;box-shadow:0 0 0 1px var(--line)}
+.footer__mark{font-family:var(--font-display);font-weight:700;color:var(--bone);font-size:1.1rem}
 .footer__col p{color:var(--dust);font-size:.92rem;max-width:34ch}
 .footer__label{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
   color:var(--brass);display:block;margin-bottom:1rem}
@@ -627,9 +630,8 @@ html.lenis,html.lenis body{height:auto}
   animation:ptCover .6s cubic-bezier(.76,0,.24,1) forwards}
 .page-transition__brand{position:relative;z-index:1;display:flex;flex-direction:column;
   align-items:center;gap:1.1rem}
-.page-transition__mark{width:3.6rem;height:3.6rem;display:grid;place-items:center;background:var(--brass);
-  color:var(--quarry);font-family:var(--font-display);font-weight:800;font-size:1.5rem;
-  border-radius:3px;letter-spacing:-.03em}
+.page-transition__mark{width:3.6rem;height:3.6rem;display:block;object-fit:cover;
+  border-radius:50%;box-shadow:0 0 0 2px var(--brass)}
 .page-transition__name{font-family:var(--font-display);font-weight:700;color:var(--bone);
   font-size:clamp(1.3rem,4vw,2.1rem);letter-spacing:-.01em}
 .page-transition__sub{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.35em;
