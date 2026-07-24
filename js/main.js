@@ -93,17 +93,22 @@
      Incoming page: panel (covering by default) slides out RIGHT.
   --------------------------------------------------------- */
   function initPageTransition() {
-    const panel = document.getElementById('pageTransition');
-    if (!panel) return;
+    const wrap = document.getElementById('pageTransition');
+    if (!wrap) return;
+    const panelEl = wrap.querySelector('.page-transition__panel');
+    const brandEl = wrap.querySelector('.page-transition__brand');
 
-    // Restore from bfcache (back/forward): the panel may have been left
+    // Restore from bfcache (back/forward): the curtain may have been left
     // in its covering state — re-run the reveal so content shows.
     window.addEventListener('pageshow', e => {
       if (!e.persisted) return;
-      panel.classList.remove('is-covering');
-      panel.style.animation = 'none';
-      void panel.offsetWidth;          // force reflow to restart the reveal
-      panel.style.animation = '';
+      wrap.classList.remove('is-covering');
+      [panelEl, brandEl].forEach(el => {
+        if (!el) return;
+        el.style.animation = 'none';
+        void el.offsetWidth;            // force reflow to restart the reveal
+        el.style.animation = '';
+      });
     });
 
     if (REDUCED) return;               // CSS hides the panel; navigate normally
@@ -129,7 +134,7 @@
       e.preventDefault();
       const dest = a.href;
       if (lenis) lenis.stop();
-      panel.classList.add('is-covering');          // slide in from the left
+      wrap.classList.add('is-covering');            // slide in from the left
       // navigate once the panel has fully covered the screen
       setTimeout(() => { window.location.href = dest; }, 600);
     });

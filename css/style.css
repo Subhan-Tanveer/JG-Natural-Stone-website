@@ -605,16 +605,24 @@ html.lenis,html.lenis body{height:auto}
 .muted{color:var(--dust)}
 .divider{height:1px;background:var(--line);max-width:var(--maxw);margin:0 auto}
 
-/* ---- page-transition curtain (brand wipe on navigation) ---- */
-.page-transition{position:fixed;inset:0;z-index:2000;background:var(--graphite);
-  display:grid;place-items:center;transform:translateX(0);pointer-events:none;
-  animation:ptReveal .7s cubic-bezier(.76,0,.24,1) .05s both}
-.page-transition::after{content:"";position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay;
+/* ---- page-transition curtain (brand wipe on navigation) ----
+   .page-transition itself never moves — only its __panel (the sliding
+   colored rect) is translated. __brand is a sibling, absolutely
+   positioned and centered on the *viewport*, so the logo/name stay put
+   at screen-center the whole time instead of traveling off with the
+   panel and only flashing into view as it exits. */
+.page-transition{position:fixed;inset:0;z-index:2000;pointer-events:none}
+.page-transition.is-covering{pointer-events:auto}
+.page-transition__panel{position:absolute;inset:0;background:var(--graphite);
+  transform:translateX(0);animation:ptPanelReveal .65s cubic-bezier(.76,0,.24,1) .05s both}
+.page-transition__panel::after{content:"";position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay;
   background-image:repeating-linear-gradient(115deg, rgba(230,224,212,.05) 0 2px, transparent 2px 8px)}
-.page-transition.is-covering{pointer-events:auto;
-  animation:ptCover .6s cubic-bezier(.76,0,.24,1) forwards}
-.page-transition__inner{position:relative;z-index:1;display:flex;flex-direction:column;
-  align-items:center;gap:1.1rem;animation:ptLogo .7s var(--ease) both}
+.page-transition.is-covering .page-transition__panel{
+  animation:ptPanelCover .6s cubic-bezier(.76,0,.24,1) forwards}
+.page-transition__brand{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1.1rem;opacity:0;
+  animation:ptBrandReveal .65s ease .05s both}
+.page-transition.is-covering .page-transition__brand{animation:ptBrandCover .6s ease forwards}
 .page-transition__mark{width:3.6rem;height:3.6rem;display:grid;place-items:center;background:var(--brass);
   color:var(--quarry);font-family:var(--font-display);font-weight:800;font-size:1.5rem;
   border-radius:3px;letter-spacing:-.03em}
@@ -622,9 +630,13 @@ html.lenis,html.lenis body{height:auto}
   font-size:clamp(1.3rem,4vw,2.1rem);letter-spacing:-.01em}
 .page-transition__sub{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.35em;
   text-transform:uppercase;color:var(--brass);margin-top:.1rem}
-@keyframes ptReveal{from{transform:translateX(0)}to{transform:translateX(100%)}}
-@keyframes ptCover{from{transform:translateX(-100%)}to{transform:translateX(0)}}
-@keyframes ptLogo{0%{opacity:0;transform:translateY(12px)}30%,70%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes ptPanelReveal{from{transform:translateX(0)}to{transform:translateX(100%)}}
+@keyframes ptPanelCover{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+/* brand stays fully visible while the panel covers the screen, then fades
+   out (in place, no travel) as the panel finishes wiping away */
+@keyframes ptBrandReveal{0%{opacity:1}55%{opacity:1}100%{opacity:0}}
+/* brand fades in early during the cover wipe and holds solid until navigation */
+@keyframes ptBrandCover{0%{opacity:0}45%{opacity:1}100%{opacity:1}}
 
 /* =========================================================
    REDUCED MOTION
